@@ -1,0 +1,80 @@
+<div id="wrap">
+
+<div id="left">
+<h1>inuExpress</h1>
+<div id="tt">
+<p>inuExpress is simple chat. This feature is share of img files you have and talk with someone else through drawing,text. If you  want chat, you input ';' or ':' end of line.</p>
+</div>
+
+<input type="text" id="message" value="" />
+
+<div id="display">
+
+</div>
+
+</div>
+
+
+<div id="right">
+
+
+<div id="thum">
+
+</div>
+
+<p id="intro">Put here</p>
+
+<div id="over">
+
+<canvas id="d" width="800"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+var socket = io.connect('http://www35060u.sakura.ne.jp');
+
+socket.on('user message',function(data){
+  $('#display').append(data+'<br>');
+});
+
+$(function(){
+ $('#message').keyup(function(e){
+   if(e.which == 59 || e.which == 186){
+     var txt = $(this).val();
+     txt = txt.substr(0,txt.length-1);
+//alert(txt.substr(0,txt.length-1));
+     //socket.emit('user message',$(this).val());
+     socket.emit('user message',txt);
+     $('#message').attr('value','');
+   }
+  });
+});
+
+
+var p = new Draw();
+p.set_cvs();
+p.mouse_down();
+p.mouse_move();
+p.mouse_up();
+p.draw_state();
+
+
+socket.on('img',function(g){
+        var thum = document.createElement('div');
+        thum.className = 'image_thum';
+        $('#thum').append(thum);
+        var img = new Image();
+        img.style.margin = '10px';
+        img.style.position = 'absolute';
+        img.src = g;
+        thum.appendChild(img);
+ 
+});
+
+
+</script>
